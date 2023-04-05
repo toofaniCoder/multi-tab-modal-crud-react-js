@@ -21,14 +21,16 @@ const CreateModal = () => {
   const navigate = useNavigate();
   const revalidator = useRevalidator();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { control, reset, formState } = useFormContext();
+  const { control, reset, formState, resetField } = useFormContext();
   const singular = pluralize.singular(searchParams.get('tab'));
 
   return (
     <Modal
       open={true}
       onClose={() => {
-        reset({ student: formState.defaultValues[singular] });
+        for (const property in formState.defaultValues[singular]) {
+          resetField(`${singular}.${property}`);
+        }
         navigate(-1);
       }}
     >
@@ -63,7 +65,10 @@ const CreateModal = () => {
               data: formData,
             });
             revalidator.revalidate();
-            reset({ student: formState.defaultValues[singular] });
+            // reset({ student: formState.defaultValues[singular] });
+            for (const property in form_values) {
+              resetField(`${singular}.${property}`);
+            }
             navigate(-1, { replace: true });
           }}
         >
