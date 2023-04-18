@@ -95,16 +95,16 @@ const Dashboard = () => {
             Drivers
           </Tab>
         </TabList>
-        <TabPanel value="students" sx={{ p: 2 }}>
+        <TabPanel value="students" sx={{ pt: 0 }}>
           <Students />
         </TabPanel>
-        <TabPanel value="teachers" sx={{ p: 2 }}>
+        <TabPanel value="teachers" sx={{ pt: 0 }}>
           <Teachers />
         </TabPanel>
-        <TabPanel value="staffs" sx={{ p: 2 }}>
+        <TabPanel value="staffs" sx={{ pt: 0 }}>
           <Staffs />
         </TabPanel>
-        <TabPanel value="drivers" sx={{ p: 2 }}>
+        <TabPanel value="drivers" sx={{ pt: 0 }}>
           <Drivers />
         </TabPanel>
       </Tabs>

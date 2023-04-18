@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { CssVarsProvider, CssBaseline, GlobalStyles } from '@mui/joy';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, defer } from 'react-router-dom';
 import axios from 'axios';
 import queryString from 'query-string';
 
@@ -17,6 +17,8 @@ import Dashboard from './routes/dashboard';
 import CreateModal from './components/create-modal';
 import UpdateModal from './components/update-modal';
 
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -30,12 +32,15 @@ const router = createBrowserRouter([
         path: 'dashboard',
         element: <Dashboard />,
         loader: async ({ request }) => {
+          // await delay(5000);
           const query = queryString.parseUrl(request.url).query;
-          const result = await axios({
+          const resultPromise = axios({
             method: request.method,
             url: `/api/${query.tab}?populate=*`,
           });
-          return result.data;
+          return defer({
+            [query.tab]: resultPromise,
+          });
         },
         children: [
           {
@@ -61,7 +66,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <CssVarsProvider defaultMode="dark">
+  <CssVarsProvider defaultMode="light">
     <CssBaseline />
     <GlobalStyles />
     <RouterProvider router={router} />
