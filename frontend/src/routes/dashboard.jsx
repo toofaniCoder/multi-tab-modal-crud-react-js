@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   Tabs,
   TabList,
@@ -6,6 +6,7 @@ import {
   TabPanel,
   ListItemDecorator,
   IconButton,
+  LinearProgress,
 } from '@mui/joy';
 
 import Students from './students';
@@ -19,11 +20,19 @@ import SchoolTwoToneIcon from '@mui/icons-material/SchoolTwoTone';
 import Groups2TwoToneIcon from '@mui/icons-material/Groups2TwoTone';
 import DirectionsBusTwoToneIcon from '@mui/icons-material/DirectionsBusTwoTone';
 
-import { useSearchParams, Outlet, Link, useLocation } from 'react-router-dom';
-
+import {
+  useSearchParams,
+  Outlet,
+  Link,
+  useLocation,
+  Await,
+  useLoaderData,
+} from 'react-router-dom';
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const Dashboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const { dashboardPromise } = useLoaderData();
 
   useEffect(() => {
     if (!searchParams.get('tab')) {
@@ -95,18 +104,27 @@ const Dashboard = () => {
             Drivers
           </Tab>
         </TabList>
-        <TabPanel value="students" sx={{ pt: 0 }}>
-          <Students />
-        </TabPanel>
-        <TabPanel value="teachers" sx={{ pt: 0 }}>
-          <Teachers />
-        </TabPanel>
-        <TabPanel value="staffs" sx={{ pt: 0 }}>
-          <Staffs />
-        </TabPanel>
-        <TabPanel value="drivers" sx={{ pt: 0 }}>
-          <Drivers />
-        </TabPanel>
+        <React.Suspense
+          fallback={<LinearProgress sx={{ flex: 'none' }} thickness={10} />}
+        >
+          <Await
+            resolve={delay(4000).then(() => dashboardPromise)}
+            errorElement={<p>loading data error...</p>}
+          >
+            <TabPanel value="students" sx={{ p: 2 }}>
+              <Students />
+            </TabPanel>
+            <TabPanel value="teachers" sx={{ p: 2 }}>
+              <Teachers />
+            </TabPanel>
+            <TabPanel value="staffs" sx={{ p: 2 }}>
+              <Staffs />
+            </TabPanel>
+            <TabPanel value="drivers" sx={{ p: 2 }}>
+              <Drivers />
+            </TabPanel>
+          </Await>
+        </React.Suspense>
       </Tabs>
     </>
   );

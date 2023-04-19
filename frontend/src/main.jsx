@@ -39,7 +39,7 @@ const router = createBrowserRouter([
             url: `/api/${query.tab}?populate=*`,
           });
           return defer({
-            [query.tab]: resultPromise,
+            dashboardPromise: resultPromise,
           });
         },
         children: [
